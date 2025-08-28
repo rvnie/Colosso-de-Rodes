@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colosso de Rodes</title>
+  <!-- Fonte decorativa para os títulos -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset básico para remover margens e padronizar */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Estilo geral do corpo */
+    body {
+      background-image: url("img/olho azul foda.webp"); /* Imagem de fundo */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 120vh;
+      overflow-y: scroll;
+      font-family: 'Georgia', serif;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Barra lateral das imagens */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Estilo das imagens laterais com animação */
+    .sidebar img {
+      width: 140px;
+      border: 3px solid gold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      animation: glowBorder 2.5s infinite ease-in-out;
+      box-shadow: 0 0 10px gold;
+    }
+
+    .sidebar img:hover {
+      transform: scale(1.05); /* Aumenta ao passar o mouse */
+      box-shadow: 0 0 25px gold, 0 0 50px orange; /* Efeito de brilho */
+    }
+
+    /* Animação do brilho da borda */
+    @keyframes glowBorder {
+      0%, 100% {
+        box-shadow: 0 0 10px gold, 0 0 20px goldenrod;
+      }
+      50% {
+        box-shadow: 0 0 25px gold, 0 0 40px orange;
+      }
+    }
+
+    /* Caixa de conteúdo principal */
+    .content {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 600px;
+      flex: 1 1 600px;
+      margin: 20px;
+    }
+
+    .content h1 {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 56px;
+      color: gold; /* Título em dourado */
+    }
+
+    .content p {
+      margin-top: 20px;
+      font-size: 18px;
+      line-height: 1.6;
+      text-align: justify;
+    }
+
+    /* Botão de referência bibliográfica */
+    .button {
+      margin-top: 30px;
+      padding: 12px 24px;
+      background-color: gold;
+      color: black;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-family: 'Cinzel Decorative', cursive;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px gold;
+      border: 2px solid white;
+    }
+    .button:hover {
+      background-color: darkgoldenrod;
+    }
+
+    /* Estilo do modal (janela sobreposta) */
+    .modal {
+      display: none; /* Inicialmente invisível */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8); /* Fundo escuro */
+    }
+
+    /* Conteúdo interno do modal */
+    .modal-content {
+      margin: 5% auto;
+      padding: 20px;
+      background-color: #111;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 700px;
+      text-align: center;
+    }
+
+    .modal-content img {
+      max-width: 100%;
+      max-height: 60vh;
+      width: auto;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .modal-content h2 {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 32px;
+      color: gold;
+      margin-bottom: 10px;
+    }
+
+    .modal-content p {
+      font-size: 18px;
+      color: #fff;
+    }
+
+    /* Botão para fechar modal */
+    .close-btn {
+      margin-top: 15px;
+      background-color: darkred;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      background-color: red;
+    }
+
+    /* Rodapé de referências */
+    #referencias {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      max-height: 40px;
+      overflow: hidden;
+      background-color: rgba(0,0,0,0.85);
+      border-top: 2px solid gold;
+      color: white;
+      font-family: 'Georgia', serif;
+      text-align: center;
+      box-shadow: 0 -4px 10px rgba(255, 215, 0, 0.4);
+      transition: max-height 0.5s ease, padding 0.5s ease;
+      z-index: 1000;
+      padding: 10px 40px;
+      display: none; 
+    }
+
+    /* Rodapé expandido ao clicar */
+    #referencias.expanded {
+      display: block;
+      max-height: 300px;
+      padding: 20px 40px;
+      text-align: left;
+    }
+
+    #referencias h2 {
+      font-family: 'Cinzel Decorative', cursive;
+      color: gold;
+      margin-bottom: 8px;
+      font-size: 24px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    #referencias p {
+      font-size: 14px;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* Links das referências com estilo e prioridade de clique */
+    #referencias a {
+      color: gold; /* Mesma cor dourada, destacando como link */
+      text-decoration: none;
+      position: relative;
+      z-index: 2000; /* Garante que fiquem clicáveis */
+      display: inline-block;
+      margin: 5px 0;
+    }
+
+    #referencias a:hover {
+      text-decoration: underline;
+    }
+
+    /* Botão de fechar o rodapé */
+    #referencias .close-footer-btn {
+      background: none;
+      border: none;
+      color: gold;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      float: right;
+      margin-top: -4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra lateral esquerda com imagem -->
+  <div class="sidebar">
+    <img src="img/chapeu nordestino.jpg"
+      alt="Templo Grego"
+      onclick="openModal(this.src, 'Carés de Limos', `As histórias contam que Carés de Limos, o construtor da estátua, nunca chegou a ver ela terminada, já que acabou tirando a sua vida antes. E curiosamente todas as teorias sobre sua morte envolvem a estátua. A teoria mais plausível é de que ele acabou ficando neurótico pois pensou que a estrutura não aguentaria e desabaria com muita facilidade. E como isso o tornaria motivo de desprezo pelos grandes artesãos da época, ele acabou não resistindo à pressão.`)">
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div class="content">
+    <h1>Colosso de Rodes</h1>
+    <p>Uma das sete maravilhas do mundo antigo, o Colosso de Rodes foi uma estátua gigantesca do deus Hélio, símbolo da grandeza da Grécia Antiga.</p>
+
+    <p>O Colosso de Rodes, uma das Sete Maravilhas do Mundo Antigo, foi uma estátua construída na ilha grega de Rodes, por volta de 280 a.C, medindo cerca de 30 metros de altura para homenagear o deus Hélio, patrono da ilha, que na época saiu vitoriosa na batalha contra o exército de Demétrio I da Macedônia.</p>
+
+    <p>Infelizmente, em 226 a.C., cerca de 56 anos após sua construção, um terremoto derrubou a estátua, quebrando seus joelhos. Embora destruído, o Colosso deixou um legado como um símbolo da ilha e da sua força.</p>
+
+    <p>O monumento foi incluído na lista das Maravilhas do Mundo Antigo graças à sua escala grandiosa, as técnicas utilizadas na sua construção e principalmente seu significado pujante que foi sinônimo de vitória e arte.</p>
+
+    <!-- Botão que abre as referências -->
+    <button class="button greek-btn" id="btnReferencia">Referência Bibliográfica</button>
+  </div>
+
+  <!-- Barra lateral direita com imagens -->
+  <div class="sidebar">
+    <img src="img/olhando pro ceu.jpg"
+      alt="Parthenon"
+      onclick="openModal(this.src, 'Como construíram uma estátua de 30 metros?', `Para a estátua ser construída foi necessário criar uma montanha de terra ao seu redor que mais tarde, ao término da construção, teve de ser toda removida.`)">
+
+    <img src="img/bombado.jpg"
+      alt="Armadura Grega"
+      onclick="openModal(this.src, 'Por que construir uma estátua de Hélio?', `Na Grécia antiga era muito comum que as cidades tivessem um deus patrono, aquele que mais os defenderia e a quem mais seriam devotos, no caso de Rodes era Hélio, a representação do sol.`)">
+  </div>
+
+  <!-- Modal de imagem -->
+  <div id="imgModal" class="modal">
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="Imagem ampliada">
+      <h2 id="modalTitle"></h2>
+      <p id="modalText"></p>
+      <button class="close-btn" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Rodapé com referências -->
+  <section id="referencias">
+    <button class="close-footer-btn" id="closeReferencia" title="Fechar referências">&times;</button>
+    <h2>Referência Bibliográfica</h2>
+    <p>
+      <a href="https://www.infoescola.com/grecia-antiga/colosso-de-rodes/" target="_blank">InfoEscola – Colosso de Rodes</a><br>
+      <a href="https://aventurasnahistoria.com.br/noticias/almanaque/a-vida-breve-do-impressionante-colosso-de-rodes-uma-das-maravilhas-da-antiguidade.phtml" target="_blank">Aventuras na História – A vida breve do impressionante Colosso de Rodes</a>
+    </p>
+  </section>
+
+  <!-- JavaScript -->
+  <script>
+    // Função que abre o modal (janela de imagem ampliada)
+    function openModal(imgSrc, title, text) {
+      document.getElementById('modalImage').src = imgSrc;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalText').textContent = text;
+      document.getElementById('imgModal').style.display = 'block';
+    }
+
+    // Função que fecha o modal
+    function closeModal() {
+      document.getElementById('imgModal').style.display = 'none';
+    }
+
+    // Seletores dos elementos da referência bibliográfica
+    const btnReferencia = document.getElementById('btnReferencia');
+    const referencia = document.getElementById('referencias');
+    const btnCloseReferencia = document.getElementById('closeReferencia');
+
+    // Alterna a abertura do rodapé
+    btnReferencia.addEventListener('click', () => {
+      referencia.classList.toggle('expanded');
+    });
+
+    // Fecha o rodapé clicando no X
+    btnCloseReferencia.addEventListener('click', () => {
+      referencia.classList.remove('expanded');
+    });
+
+    // Fecha o modal clicando fora dele
+    window.onclick = function(event) {
+      const modal = document.getElementById('imgModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
+</body>
+</html>
